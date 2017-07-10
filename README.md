@@ -3,6 +3,44 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## The Model
+
+### States of the vehicle
+1. x - vehicle position x
+2. y - vehicle position y
+3. psi - vehicle orientation
+4. v - vehicle speed
+5. cte - cross track error
+6. epsi - orientation error
+ 
+### Actuators
+1. delta - steering angle
+2. a - acceleration
+
+### Update equations
+Equations have been designed to predict the future of the model according to its constraints.
+```x(t+1)    = x(t) + v(t) * cos(psi(t)) * dt``` <br />
+```y(t+1)    = y(t) + v(t) * sin(psi(t)) * dt``` <br />
+```psi(t+1)  = psi(t) + v(t) / Lf * delta(t) * dt```     [Lf: lenght front to center of gravity] <br />
+```v(t+1)    = v(t) + a(t) * dt``` <br />
+```cte(t+1)  = f(x(t)) - y(t) + v(t) * sin(espi(t))```   [f: 3rd order polynomial] <br />
+```espi(t+1) = psi(t) - psides(t) + v(t) * delta(t) / Lf * dt``` <br />
+
+## Timestep Length and Elapsed Duration (N  and dt)
+N defines how many steps the MPC looks into the future. 
+dt describes the time between those timesteps. 
+Therefore, ```N * dt = Predicted Future```.
+During this project, both parameters were chosen by trial and error. Start values of ```N = 25``` and ```dt = .05 s``` (sample code from lessons) didn't worked for a desired speed of ```v = 40 mph``` and my hardware. Code is set up with ```N = 10``` and ```dt = .1 s``` to have a 1 s prediction.
+
+## Polynomial Fitting and MPC Preprocessing
+Third order ponomial is used as mentioned in the course as it fully covers all curves incuding the S curve in this simulator.
+
+## Model Predictive Control with Latency
+There is a 100 ms latency built into the code to represent the delay between the sensors and MPC.
+x_delay is added in line 121 in main.cpp to adjust the x position. y position is not adjusted due to vehicle coordinates.
+
+
+
 ## Dependencies
 
 * cmake >= 3.5
